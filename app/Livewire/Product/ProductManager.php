@@ -25,6 +25,8 @@ class ProductManager extends Component
     public $threshold_qty = 0;
     public $is_active = true;
     public $isModalOpen = false;
+    public $vendorFilter = '';
+    public $productSearch = '';
 
     protected $rules = [
         'vendor_id' => 'required|exists:vendors,id',
@@ -44,7 +46,11 @@ class ProductManager extends Component
 
     public function render()
     {
-        $products = Product::with('vendor')->latest()->paginate(10);
+        $products = Product::with('vendor')
+            ->when($this->vendorFilter, fn ($q) => $q->where('vendor_id', $this->vendorFilter))
+            ->when($this->productSearch, fn ($q) => $q->where('name', 'like', '%'.$this->productSearch.'%'))
+            ->latest()
+            ->paginate(10);
         $vendors = Vendor::where('is_active', true)->orderBy('name')->get();
 
         return view('livewire.product.product-manager', [
@@ -107,8 +113,9 @@ class ProductManager extends Component
     public function edit($id)
     {
         $product = Product::find($id);
-        if (!$product) {
+        if (! $product) {
             session()->flash('message', 'Product not found.');
+
             return;
         }
 
@@ -133,5 +140,15 @@ class ProductManager extends Component
             $product->delete();
             session()->flash('message', 'Product deleted successfully.');
         }
+    }
+
+    public function updatedVendorFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedProductSearch()
+    {
+        $this->resetPage();
     }
 }

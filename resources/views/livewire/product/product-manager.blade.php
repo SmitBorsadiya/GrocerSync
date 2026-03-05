@@ -14,6 +14,26 @@
     @endif
 
     <div class="bg-white dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-700 rounded-xl p-4">
+        <div class="mb-4 flex items-center gap-3">
+            <div class="w-64">
+                <flux:input wire:model.live.debounce.300ms="productSearch" placeholder="{{ __('Search products...') }}" />
+            </div>
+            <div class="w-64">
+                <select wire:model.live="vendorFilter"
+                    class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                    <option value="">{{ __('All Vendors') }}</option>
+
+                    @foreach($vendors as $vendor)
+                        <option value="{{ $vendor->id }}">
+                            {{ $vendor->name }}
+                        </option>
+                    @endforeach
+
+                </select>
+            </div>
+        </div>
+
         <flux:table>
             <flux:table.columns>
                 <flux:table.column>{{ __('Name') }}</flux:table.column>
@@ -70,7 +90,8 @@
 
                                 <flux:menu>
                                     <flux:menu.item wire:click="edit({{ $product->id }})" icon="pencil-square">
-                                        {{ __('Edit') }}</flux:menu.item>
+                                        {{ __('Edit') }}
+                                    </flux:menu.item>
                                     <flux:menu.item wire:click="delete({{ $product->id }})"
                                         wire:confirm="Are you sure you want to delete this product?" icon="trash"
                                         variant="danger">{{ __('Delete') }}</flux:menu.item>
@@ -96,11 +117,13 @@
     </div>
 
     <!-- Create / Edit Modal -->
-    <flux:modal wire:model="isModalOpen" name="product-modal" :heading="$productId ? __('Edit Product') : __('Create Product')">
+    <flux:modal wire:model="isModalOpen" name="product-modal"
+        :heading="$productId ? __('Edit Product') : __('Create Product')">
         <form wire:submit.prevent="save" class="space-y-6">
             <flux:field>
                 <flux:label>{{ __('Vendor') }}</flux:label>
-                <select wire:model.live="vendor_id" class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select wire:model.live="vendor_id"
+                    class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">{{ __('Select Vendor') }}</option>
                     @foreach($vendors as $vendor)
                         <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
