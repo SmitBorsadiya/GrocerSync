@@ -100,11 +100,12 @@
         <form wire:submit.prevent="save" class="space-y-6">
             <flux:field>
                 <flux:label>{{ __('Vendor') }}</flux:label>
-                <flux:select wire:model.live="vendor_id" placeholder="{{ __('Select Vendor') }}">
+                <select wire:model.live="vendor_id" class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">{{ __('Select Vendor') }}</option>
                     @foreach($vendors as $vendor)
-                        <flux:select.option :value="$vendor->id">{{ $vendor->name }}</flux:select.option>
+                        <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
                     @endforeach
-                </flux:select>
+                </select>
                 <flux:error name="vendor_id" />
             </flux:field>
 

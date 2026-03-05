@@ -106,7 +106,11 @@ class ProductManager extends Component
 
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+        if (!$product) {
+            session()->flash('message', 'Product not found.');
+            return;
+        }
 
         $this->productId = $product->id;
         $this->vendor_id = $product->vendor_id;
